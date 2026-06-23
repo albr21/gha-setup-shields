@@ -1,8 +1,11 @@
-name: <project-name>
+name: gha-setup-shields
 description: |-
-  <project-description>
-version: 0.0.0
+  GitHub Action to setup a local shields.io badge service using Docker.
+version: 1.0.0
 releases:
+  - version: 1.0.0
+    changes:
+      - Initial release
   - version: 0.0.0
     changes:
       - Under development

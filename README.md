@@ -1,10 +1,19 @@
-# <project-name>
+# gha-setup-shields
 
-<!-- A brief description of the project. -->
+GitHub Action to setup a local shields.io badge service using Docker.
 
 ## Usage
 
-<!-- Provide instructions on how to use the project, including code examples if applicable. -->
+```yaml
+steps:
+  - name: Setup Shields.io Service
+    uses: gha-setup-shields@v1.0.0
+    with:
+      image: "ghcr.io/badges/shields:latest"
+      port: 8080
+      container-name: shields-service
+      startup-timeout: 60
+```
 
 ## Contributing
 
