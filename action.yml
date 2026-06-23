@@ -33,6 +33,12 @@ inputs:
       Seconds to wait for the service to become ready before failing
     required: false
     default: "60"
+  command-line-interpreter:
+    description: |-
+      Command line interpreter.
+      By default, it uses `bash`, but you can change it to `sh`.
+    required: false
+    default: bash
 
 outputs:
   service-url:
@@ -51,7 +57,8 @@ runs:
             {"value": "${{ inputs.port }}", "type": "integer"},
             {"value": "${{ inputs.image }}", "type": "string"},
             {"value": "${{ inputs.container-name }}", "type": "string"},
-            {"value": "${{ inputs.startup-timeout }}", "type": "integer"}
+            {"value": "${{ inputs.startup-timeout }}", "type": "integer"},
+            {"value": "${{ inputs.command-line-interpreter }}", "type": "enum", "enumValues": ["bash", "sh"]}
           ]
   
     - name: Set GITHUB_ACTION_PATH variable
