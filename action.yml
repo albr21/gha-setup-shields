@@ -1,0 +1,69 @@
+name: gha-setup-shields
+
+description: |-
+  GitHub Action to setup a local shields.io badge service using Docker.
+  It starts a local shields.io-compatible HTTP server using the given Docker image.
+  Enable badge generation without calling an external service.
+  A cleanup step is registered so the container is stopped automatically when
+  the job finishes (self-hosted runners).
+
+author: albr21
+branding:
+  icon: server
+  color: purple
+
+inputs:
+  image:
+    description: |-
+      Docker image to use for the shields.io service
+    required: false
+    default: "ghcr.io/badges/shields:latest"
+  port:
+    description: |-
+      Host port to bind the shields.io service on
+    required: false
+    default: "8080"
+  container-name:
+    description: |-
+      Name of the Docker container (avoids conflicts on self-hosted runners)
+    required: false
+    default: shields-local
+  startup-timeout:
+    description: |-
+      Seconds to wait for the service to become ready before failing
+    required: false
+    default: "60"
+
+outputs:
+  service-url:
+    description: |-
+      Base URL of the running local shields.io service
+    value: ${{ steps.start-service.outputs.service_url }}
+
+runs:
+  using: composite
+  steps:
+    - name: Validate Inputs
+      uses: albr21/gha-type-guard@1.0.0
+      with:
+        payload: |
+          [
+            {"value": "${{ inputs.port }}", "type": "integer"},
+            {"value": "${{ inputs.image }}", "type": "string"},
+            {"value": "${{ inputs.container-name }}", "type": "string"},
+            {"value": "${{ inputs.startup-timeout }}", "type": "integer"}
+          ]
+  
+    - name: Set GITHUB_ACTION_PATH variable
+      run: echo "GITHUB_ACTION_PATH=${GITHUB_ACTION_PATH}" >> $GITHUB_ENV
+      shell: ${{ inputs.command-line-interpreter }}
+
+    - name: Start shields.io service
+      id: start-service
+      shell: ${{ inputs.command-line-interpreter }}
+      run: |-
+        ${{ inputs.command-line-interpreter }} ${{ env.GITHUB_ACTION_PATH }}/scripts/main.sh \
+          --port "${{ inputs.port }}" \
+          --image "${{ inputs.image }}" \
+          --container-name "${{ inputs.container-name }}" \
+          --startup-timeout "${{ inputs.startup-timeout }}"
