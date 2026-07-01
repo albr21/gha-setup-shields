@@ -32,7 +32,7 @@ inputs:
     description: |-
       Seconds to wait for the service to become ready before failing
     required: false
-    default: "60"
+    default: "120"
   command-line-interpreter:
     description: |-
       Command line interpreter.
