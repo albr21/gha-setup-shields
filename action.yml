@@ -60,7 +60,7 @@ runs:
             {"value": "${{ inputs.startup-timeout }}", "type": "integer"},
             {"value": "${{ inputs.command-line-interpreter }}", "type": "enum", "enumValues": ["bash", "sh"]}
           ]
-  
+
     - name: Set GITHUB_ACTION_PATH variable
       run: echo "GITHUB_ACTION_PATH=${GITHUB_ACTION_PATH}" >> $GITHUB_ENV
       shell: ${{ inputs.command-line-interpreter }}
