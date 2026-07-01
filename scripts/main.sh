@@ -31,6 +31,7 @@ docker run -d \
   --name "${CONTAINER_NAME}" \
   --restart no \
   -p "${PORT}:8080" \
+  --env PORT=8080 \
   "${IMAGE}"
 
 SERVICE_URL="http://localhost:${PORT}"
@@ -43,7 +44,6 @@ until curl -s -f "${SERVICE_URL}" >/dev/null 2>&1; do
     echo "::error::Timeout waiting for the shields.io service to become ready after ${elapsed}s."
     echo "Docker logs:"
     docker logs "${CONTAINER_NAME}" 2>&1 || true
-    echo "Attempting to check if container is still running..."
     docker rm -f "${CONTAINER_NAME}" 2>/dev/null || true
     exit 1
   fi
