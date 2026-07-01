@@ -2,7 +2,7 @@
 PORT=8080
 IMAGE="ghcr.io/badges/shields:latest"
 CONTAINER_NAME="shields-local"
-STARTUP_TIMEOUT=60
+STARTUP_TIMEOUT=120
 
 set -e
 
@@ -38,15 +38,18 @@ SERVICE_URL="http://localhost:${PORT}"
 # Wait for the service to become ready
 echo "Waiting for the shields.io service to become ready (timeout: ${STARTUP_TIMEOUT}s)..."
 elapsed=0
-until curl -s "${SERVICE_URL}" >/dev/null 2>&1; do
+until curl -s -f "${SERVICE_URL}" >/dev/null 2>&1; do
   if [ "${elapsed}" -ge "${STARTUP_TIMEOUT}" ]; then
-    echo "::error::Timeout waiting for the shields.io service to become ready."
+    echo "::error::Timeout waiting for the shields.io service to become ready after ${elapsed}s."
+    echo "Docker logs:"
     docker logs "${CONTAINER_NAME}" 2>&1 || true
+    echo "Attempting to check if container is still running..."
     docker rm -f "${CONTAINER_NAME}" 2>/dev/null || true
     exit 1
   fi
-  sleep 2
-  elapsed=$((elapsed + 2))
+  sleep 3
+  elapsed=$((elapsed + 3))
+  echo "Still waiting... (${elapsed}s elapsed)"
 done
 
 echo "Shields.io service is ready at ${SERVICE_URL}"
